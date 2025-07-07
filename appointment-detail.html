@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预约详情 - 在线预约平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/appointment-detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span>返回仪表盘</span>
+            </a>
+            <h1 class="page-title">预约详情</h1>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="detail-container">
+        <!-- 服务信息卡片 -->
+        <div class="detail-card service-info animate-in">
+            <div class="card-header">
+                <i class="fas fa-spa service-icon"></i>
+                <h2 class="service-name">加载中...</h2>
+                <div class="appointment-status">加载中...</div>
+            </div>
+            <div class="service-details">
+                <div class="detail-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="item-content">
+                        <label>预约日期</label>
+                        <span class="appointment-date">加载中...</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="item-content">
+                        <label>预约时间</label>
+                        <span class="appointment-time">加载中...</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="item-content">
+                        <label>服务地点</label>
+                        <span class="appointment-location">加载中...</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-yen-sign"></i>
+                    <div class="item-content">
+                        <label>服务价格</label>
+                        <span class="service-price">加载中...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务提供商信息 -->
+        <div class="detail-card staff-info animate-in">
+            <h3>服务提供商</h3>
+            <div class="staff-profile">
+                <img src="img/avatar-placeholder.jpg" alt="服务商头像" class="staff-avatar">
+                <div class="staff-details">
+                    <h4 class="provider-name">加载中...</h4>
+                    <div class="rating">
+                        <div class="stars-container"></div>
+                        <span class="rating-value">0.0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 预约备注 -->
+        <div class="detail-card notes-info animate-in">
+            <h3>预约备注</h3>
+            <div class="appointment-notes">
+                加载中...
+            </div>
+        </div>
+
+        <!-- 温馨提示 -->
+        <div class="detail-card tips-info animate-in">
+            <h3>温馨提示</h3>
+            <ul class="tips-list">
+                <li><i class="fas fa-info-circle"></i> 请提前10分钟到达</li>
+                <li><i class="fas fa-clock"></i> 如需改期请提前24小时告知</li>
+                <li><i class="fas fa-phone"></i> 如有问题请联系客服：400-xxx-xxxx</li>
+            </ul>
+        </div>
+
+        <!-- 底部操作按钮 -->
+        <div class="action-buttons animate-in">
+            <button class="btn-cancel" id="cancelAppointment">
+                <i class="fas fa-times"></i>
+                取消预约
+            </button>
+            <button class="btn-reschedule" id="rescheduleAppointment">
+                <i class="fas fa-calendar-alt"></i>
+                改期
+            </button>
+        </div>
+    </main>
+
+    <!-- 确认弹窗 -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="modal-content">
+            <h3>确认取消预约？</h3>
+            <p>取消预约后，如需重新预约请重新选择时间</p>
+            <div class="modal-buttons">
+                <button class="btn-secondary" id="cancelAction">返回</button>
+                <button class="btn-primary" id="confirmAction">确认取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/appointment-detail.js"></script>
+</body>
+</html> 

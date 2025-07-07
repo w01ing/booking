@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务管理 - 在线预约平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/provider-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+<body>
+    <!-- 主体布局 -->
+    <div class="dashboard-layout">
+        <!-- 顶部导航栏 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html" class="nav-logo" style="text-decoration: none; color: black;">
+                    <img src="img/logo.svg" alt="预约平台">
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="provider-notifications.html" class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">5</span>
+                </a>
+                <div class="user-menu">
+                    <img src="img/avatar.jpg" alt="用户头像" class="user-avatar">
+                    <span class="user-name">李服务</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 侧边栏 -->
+        <aside class="dashboard-sidebar">
+            <div class="user-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar-wrapper">
+                        <img src="img/avatar.jpg" alt="用户头像" class="profile-avatar">
+                    </div>
+                    <h3 class="profile-name">李服务</h3>
+                    <p class="profile-role">服务商</p>
+                </div>
+                <div class="booking-stats">
+                    <div class="stat-card waiting" data-status="pending">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">待确认预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card upcoming" data-status="upcoming">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">即将到来</span>
+                        </div>
+                    </div>
+                    <div class="stat-card completed" data-status="completed">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已完成预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card cancelled" data-status="canceled">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">已拒绝预约</span>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+            <nav class="dashboard-nav">
+                <a href="provider-dashboard.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>预约管理</span>
+                </a>
+                <a href="service-management.html" class="nav-item active">
+                    <i class="fas fa-list-alt"></i>
+                    <span>服务管理</span>
+                    
+                </a>
+                <a href="time-slot-management.html" class="nav-item">
+                    <i class="fas fa-clock"></i>
+                    <span>时间段管理</span>
+                </a>
+                <a href="provider-reviews.html" class="nav-item">
+                    <i class="fas fa-star"></i>
+                    <span>客户评价</span>
+                    
+                </a>
+                <a href="provider-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>账号设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主要内容区 -->
+        <main class="dashboard-main">
+            <div class="main-header">
+                <h1>服务管理</h1>
+                <div class="view-selector">
+
+                    <button class="filter-btn active" data-status="all">所有服务</button>
+                    <button class="filter-btn" data-status="active">已上线</button>
+                    <button class="filter-btn" data-status="draft">草稿</button>
+                    <button class="filter-btn" data-status="inactive">已下线</button>
+                </div>
+            </div>
+
+            <!-- 服务卡片列表 -->
+            <div class="service-grid">
+                <!-- 服务卡片将通过JS动态加载 -->
+                
+                <!-- 添加新服务卡片 -->
+                <div class="service-card add-new" id="addNewService">
+                    <div class="add-service-content">
+                        <div class="add-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <h3>创建新服务</h3>
+                        <p>点击添加一个新的服务项目</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 服务创建/编辑模态框 -->
+    <div class="modal" id="serviceModal">
+        <div class="modal-content service-modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">创建新服务</h3>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm" class="service-form">
+                    <div class="form-section">
+                        <h4>基本信息</h4>
+                        <div class="form-group">
+                            <label for="serviceName">服务名称</label>
+                            <input type="text" id="serviceName" placeholder="请输入服务名称" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="serviceCategory">服务类别</label>
+                            <select id="serviceCategory" required>
+                                <option value="">请选择服务类别</option>
+                                <option value="massage">按摩推拿</option>
+                                <option value="facial">面部护理</option>
+                                <option value="spa">SPA水疗</option>
+                                <option value="beauty">美容美体</option>
+                                <option value="other">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="servicePrice">价格 (¥)</label>
+                                <input type="number" id="servicePrice" placeholder="0.00" min="0" step="0.01" required>
+                            </div>
+                            <div class="form-group half">
+                                <label for="serviceDuration">时长 (分钟)</label>
+                                <input type="number" id="serviceDuration" placeholder="30" min="15" step="5" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>服务描述</h4>
+                        <div class="form-group">
+                            <label for="serviceSummary">简介</label>
+                            <input type="text" id="serviceSummary" placeholder="简短介绍您的服务（50字以内）" maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="serviceDescription">详细描述</label>
+                            <textarea id="serviceDescription" rows="5" placeholder="详细描述您的服务内容、特点和效果..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>服务图片</h4>
+                        <div class="form-group">
+                            <div class="image-upload-container">
+                                <div class="image-upload">
+                                    <input type="file" id="serviceImage" accept="image/*">
+                                    <div class="upload-placeholder">
+                                        <i class="fas fa-camera"></i>
+                                        <span>点击上传图片</span>
+                                    </div>
+                                    <div class="image-preview" style="display: none;">
+                                        <img src="" alt="图片预览" id="imagePreview">
+                                        <button type="button" class="btn-remove-image">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p class="image-tip">推荐尺寸：800x600px，支持jpg、png格式</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>发布选项</h4>
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <label for="serviceStatus">立即发布</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="serviceStatus">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <p class="field-tip">关闭则保存为草稿</p>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel">取消</button>
+                        <button type="button" class="btn-save-draft">保存草稿</button>
+                        <button type="button" class="btn-publish-service">发布服务</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 脚本引入 -->
+    <script src="js/auth.js"></script>
+    <script src="js/service-management.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            new ServiceManagement();
+        });
+    </script>
+</body>
+</html>

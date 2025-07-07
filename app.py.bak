@@ -1,0 +1,920 @@
+from flask import Flask, request, jsonify, send_from_directory
+import json
+import os
+import uuid
+import hashlib
+from datetime import datetime, timedelta
+import jwt
+import re
+import threading
+import time
+from werkzeug.utils import secure_filename
+from flask_sqlalchemy import SQLAlchemy
+from models import db, User, Provider, Service, Booking, Review, Notification, TimeSlot, Address, Favorite
+
+app = Flask(__name__, static_folder='.', static_url_path='')
+
+# 配置密钥
+app.config['SECRET_KEY'] = 'your_secret_key_here'
+app.config['JWT_EXPIRATION_DELTA'] = 24 * 60 * 60  # Token有效期24小时
+
+# 配置数据库
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456@localhost/service_booking'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# 初始化数据库
+db.init_app(app)
+
+# 确保static/uploads目录存在
+UPLOAD_FOLDER = 'static/uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+# 辅助函数
+def hash_password(password):
+    """对密码进行哈希处理"""
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def generate_token(user_id, user_type):
+    """生成JWT令牌"""
+    payload = {
+        'user_id': user_id,
+        'user_type': user_type,
+        'exp': datetime.utcnow() + timedelta(seconds=app.config['JWT_EXPIRATION_DELTA'])
+    }
+    return jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+
+def verify_token(token):
+    """验证JWT令牌"""
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        return payload
+    except:
+        return None
+
+# 路由：提供静态文件
+@app.route('/')
+def index():
+    return send_from_directory('.', 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('.', path)
+
+# API路由：用户注册
+@app.route('/api/register', methods=['POST'])
+def register():
+    data = request.json or {}
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+    user_type = data.get('userType')
+    
+    if not all([username, email, password, user_type]):
+        return jsonify({'message': '所有字段都是必填的'}), 400
+    
+    # 检查邮箱是否已被注册
+    if user_type == 'user':
+        existing_user = User.query.filter_by(email=email).first()
+    else:
+        existing_user = Provider.query.filter_by(email=email).first()
+    
+    if existing_user:
+            return jsonify({'message': '该邮箱已被注册'}), 400
+    
+    # 创建新用户
+    if user_type == 'user':
+        new_user = User(
+            username=username,
+            email=email,
+            password=hash_password(password),
+            created_at=datetime.now()
+        )
+    else:  # 服务提供商
+        new_user = Provider(
+            username=username,
+            email=email,
+            password=hash_password(password),
+            business_name='',
+            business_description='',
+            rating=0,
+            verified=False,
+            created_at=datetime.now()
+        )
+    
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'注册失败: {str(e)}'}), 500
+    
+    return jsonify({'message': '注册成功', 'userId': new_user.id}), 201
+
+# API路由：用户登录
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.json or {}
+    email = data.get('email')
+    password = data.get('password')
+    
+    if not all([email, password]):
+        return jsonify({'message': '邮箱和密码都是必填的'}), 400
+    
+    # 在用户和服务商表中查找匹配的用户
+    user_found = False
+    user_data = None
+    user_type = None
+    
+    # 首先在用户表中查找
+    user = User.query.filter_by(email=email, password=hash_password(password)).first()
+    if user:
+            user_found = True
+            user_data = user
+            user_type = 'user'
+    else:
+        # 如果在用户表中未找到，则在服务商表中查找
+        provider = Provider.query.filter_by(email=email, password=hash_password(password)).first()
+        if provider:
+                user_found = True
+                user_data = provider
+                user_type = 'provider'
+    
+    if not user_found or not user_data:
+        return jsonify({'message': '邮箱或密码不正确'}), 401
+    
+    # 生成令牌
+    token = generate_token(user_data.id, user_type)
+    
+    # 根据用户类型返回不同的重定向路径
+    redirect_path = 'provider-dashboard.html' if user_type == 'provider' else 'dashboard.html'
+    
+    return jsonify({
+        'message': '登录成功',
+        'token': token,
+        'userType': user_type,
+        'userId': user_data.id,
+        'username': user_data.username,
+        'redirect': redirect_path
+    }), 200
+
+# API路由：获取用户信息
+@app.route('/api/user', methods=['GET'])
+def get_user_info():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    # 根据用户类型获取用户信息
+    if user_type == 'user':
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'message': '用户不存在'}), 404
+        
+        # 返回用户信息
+        return jsonify(user.to_dict()), 200
+    else:  # provider
+        provider = Provider.query.get(user_id)
+        if not provider:
+            return jsonify({'message': '服务商不存在'}), 404
+        
+        # 返回服务商信息
+        return jsonify(provider.to_dict()), 200
+
+# API路由：更新用户信息
+@app.route('/api/user', methods=['PUT'])
+def update_user_info():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    # 获取请求数据
+    data = request.json or {}
+    
+    try:
+        # 根据用户类型更新用户信息
+        if user_type == 'user':
+            user = User.query.get(user_id)
+            if not user:
+                return jsonify({'message': '用户不存在'}), 404
+            
+            # 更新用户信息
+            if 'username' in data:
+                user.username = data['username']
+            if 'nickname' in data:
+                user.nickname = data['nickname']
+            if 'phone' in data:
+                user.phone = data['phone']
+            if 'gender' in data:
+                user.gender = data['gender']
+            if 'birthday' in data and data['birthday']:
+                try:
+                    user.birthday = datetime.strptime(str(data['birthday']), '%Y-%m-%d').date()
+                except ValueError:
+                    return jsonify({'message': '生日格式不正确，应为YYYY-MM-DD'}), 400
+            if 'bio' in data:
+                user.bio = data['bio']
+            if 'avatar' in data:
+                user.avatar = data['avatar']
+            if 'notification_settings' in data:
+                user.notification_settings = json.dumps(data['notification_settings'])
+            if 'privacy_settings' in data:
+                user.privacy_settings = json.dumps(data['privacy_settings'])
+            if 'blacklist' in data:
+                user.blacklist = json.dumps(data['blacklist'])
+            
+            user.updated_at = datetime.now()
+            
+        else:  # provider
+            provider = Provider.query.get(user_id)
+            if not provider:
+                return jsonify({'message': '服务商不存在'}), 404
+            
+            # 更新服务商信息
+            if 'username' in data:
+                provider.username = data['username']
+            if 'business_name' in data:
+                provider.business_name = data['business_name']
+            if 'business_description' in data:
+                provider.business_description = data['business_description']
+            
+            provider.updated_at = datetime.now()
+        
+        # 保存更新
+        db.session.commit()
+        
+        return jsonify({'message': '用户信息更新成功'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'更新失败: {str(e)}'}), 500
+
+# API路由：更新用户密码
+@app.route('/api/user/password', methods=['PUT'])
+def update_user_password():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    # 获取请求数据
+    data = request.json or {}
+    current_password = data.get('current_password')
+    new_password = data.get('new_password')
+    
+    if not all([current_password, new_password]):
+        return jsonify({'message': '当前密码和新密码都是必填的'}), 400
+    
+    try:
+        # 根据用户类型验证当前密码并更新
+        if user_type == 'user':
+            user = User.query.get(user_id)
+            if not user:
+                return jsonify({'message': '用户不存在'}), 404
+            
+            # 验证当前密码
+            if user.password != hash_password(current_password):
+                return jsonify({'message': '当前密码不正确'}), 401
+            
+            # 更新密码
+            user.password = hash_password(new_password)
+            user.updated_at = datetime.now()
+            
+        else:  # provider
+            provider = Provider.query.get(user_id)
+            if not provider:
+                return jsonify({'message': '服务商不存在'}), 404
+            
+            # 验证当前密码
+            if provider.password != hash_password(current_password):
+                return jsonify({'message': '当前密码不正确'}), 401
+            
+            # 更新密码
+            provider.password = hash_password(new_password)
+            provider.updated_at = datetime.now()
+        
+        # 保存更新
+        db.session.commit()
+        
+        return jsonify({'message': '密码更新成功'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'更新密码失败: {str(e)}'}), 500
+
+# API路由：获取用户预约列表
+@app.route('/api/bookings', methods=['GET'])
+def get_bookings():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    # 根据用户类型查询预约
+    if user_type == 'user':
+        bookings = Booking.query.filter_by(user_id=user_id).all()
+    else:  # provider
+        bookings = Booking.query.filter_by(provider_id=user_id).all()
+    
+    result = []
+    for booking in bookings:
+        booking_data = booking.to_dict()
+        
+        # 获取服务详情
+        service = Service.query.get(booking.service_id)
+        if service:
+            booking_data['service'] = service.to_dict()
+        
+        # 获取用户和服务商详情
+        if user_type == 'provider':
+            user = User.query.get(booking.user_id)
+            if user:
+                booking_data['user'] = {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email
+                }
+        else:
+            provider = Provider.query.get(booking.provider_id)
+            if provider:
+                booking_data['provider'] = {
+                    'id': provider.id,
+                    'username': provider.username,
+                    'business_name': provider.business_name
+                }
+        
+        # 检查是否已评价
+        review = Review.query.filter_by(booking_id=booking.id).first()
+        booking_data['has_reviewed'] = review is not None
+        
+        result.append(booking_data)
+    
+    return jsonify(result), 200
+
+# API路由：创建预约
+@app.route('/api/bookings', methods=['POST'])
+def create_booking():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    if user_type != 'user':
+        return jsonify({'message': '只有用户才能创建预约'}), 403
+    
+    data = request.json or {}
+    service_id = data.get('service_id')
+    date = data.get('date')
+    time = data.get('time')
+    
+    if not all([service_id, date, time]):
+        return jsonify({'message': '服务ID、日期和时间都是必填的'}), 400
+    
+    # 获取服务信息
+    service = Service.query.get(service_id)
+    if not service:
+        return jsonify({'message': '服务不存在'}), 404
+    
+    provider_id = service.provider_id
+    
+    # 创建新预约
+    new_booking = Booking(
+        user_id=user_id,
+        provider_id=provider_id,
+        service_id=service_id,
+        date=datetime.strptime(date, '%Y-%m-%d').date(),
+        time=time,
+        status='pending',
+        created_at=datetime.now()
+    )
+    
+    db.session.add(new_booking)
+    db.session.commit()
+    
+    return jsonify({
+        'message': '预约创建成功',
+        'booking': new_booking.to_dict()
+    }), 201
+
+# API路由：更新预约状态
+@app.route('/api/bookings/<booking_id>', methods=['PUT'])
+def update_booking(booking_id):
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    # 获取预约信息
+    booking = Booking.query.get(booking_id)
+    if not booking:
+        return jsonify({'message': '预约不存在'}), 404
+    
+    # 验证用户权限
+    if (user_type == 'user' and booking.user_id != user_id) or \
+       (user_type == 'provider' and booking.provider_id != user_id):
+        return jsonify({'message': '无权操作此预约'}), 403
+    
+    data = request.json or {}
+    status = data.get('status')
+    
+    if not status:
+        return jsonify({'message': '状态是必填的'}), 400
+    
+    # 更新预约状态
+    booking.status = status
+    
+    # 如果是完成状态，设置需要评价标记
+    if status == 'completed':
+        booking.review_needed = True
+    
+    booking.updated_at = datetime.now()
+    db.session.commit()
+    
+    return jsonify({
+        'message': '预约状态更新成功',
+        'booking': booking.to_dict()
+    }), 200
+
+# API路由：获取用户收藏列表
+@app.route('/api/favorites', methods=['GET'])
+def get_favorites():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    if user_type != 'user':
+        return jsonify({'message': '只有用户才能查看收藏'}), 403
+    
+    # 获取用户收藏
+    favorites = Favorite.query.filter_by(user_id=user_id).all()
+    
+    result = []
+    for favorite in favorites:
+        service = Service.query.get(favorite.service_id)
+        if service:
+            service_data = service.to_dict()
+            result.append(service_data)
+    
+    return jsonify(result), 200
+
+# API路由：添加收藏
+@app.route('/api/favorites', methods=['POST'])
+def add_favorite():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    if user_type != 'user':
+        return jsonify({'message': '只有用户才能添加收藏'}), 403
+    
+    data = request.json or {}
+    service_id = data.get('service_id')
+    
+    if not service_id:
+        return jsonify({'message': '服务ID是必填的'}), 400
+    
+    # 检查服务是否存在
+    service = Service.query.get(service_id)
+    if not service:
+        return jsonify({'message': '服务不存在'}), 404
+    
+    # 检查是否已收藏
+    existing_favorite = Favorite.query.filter_by(user_id=user_id, service_id=service_id).first()
+    if existing_favorite:
+        return jsonify({'message': '已经收藏过该服务'}), 400
+    
+    # 创建新收藏
+    new_favorite = Favorite(
+        user_id=user_id,
+        service_id=service_id,
+        created_at=datetime.now()
+    )
+    
+    db.session.add(new_favorite)
+    db.session.commit()
+    
+    return jsonify({
+        'message': '收藏添加成功',
+        'service': service.to_dict()
+    }), 201
+
+# API路由：删除收藏
+@app.route('/api/favorites/<service_id>', methods=['DELETE'])
+def remove_favorite(service_id):
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    if user_type != 'user':
+        return jsonify({'message': '只有用户才能删除收藏'}), 403
+    
+    # 查找并删除收藏
+    favorite = Favorite.query.filter_by(user_id=user_id, service_id=service_id).first()
+    if not favorite:
+        return jsonify({'message': '未找到该收藏'}), 404
+    
+    db.session.delete(favorite)
+    db.session.commit()
+    
+    return jsonify({'message': '收藏删除成功'}), 200
+
+# API路由：取消预约
+@app.route('/api/bookings/<booking_id>', methods=['DELETE'])
+def cancel_booking(booking_id):
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    user_id = payload.get('user_id')
+    user_type = payload.get('user_type')
+    
+    # 获取预约信息
+    booking = Booking.query.get(booking_id)
+    if not booking:
+        return jsonify({'message': '预约不存在'}), 404
+    
+    # 验证用户权限
+    if (user_type == 'user' and booking.user_id != user_id) or \
+       (user_type == 'provider' and booking.provider_id != user_id):
+        return jsonify({'message': '无权操作此预约'}), 403
+    
+    # 将预约状态改为已取消
+    booking.status = 'canceled'
+    booking.updated_at = datetime.now()
+    db.session.commit()
+    
+    return jsonify({'message': '预约已取消'}), 200
+
+# API路由：获取所有服务
+@app.route('/api/services', methods=['GET'])
+def get_all_services():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    # 查询所有服务
+    services = Service.query.all()
+    
+    # 转换为JSON格式
+    result = []
+    for service in services:
+        service_data = service.to_dict()
+        result.append(service_data)
+    
+    return jsonify(result), 200
+
+# API路由：获取公开服务（无需认证）
+@app.route('/api/services/public', methods=['GET'])
+def get_public_services():
+    # 获取查询参数
+    query = request.args.get('query', '')
+    category = request.args.get('category', '')
+    sort_by = request.args.get('sort_by', '')
+    limit = request.args.get('limit', 50, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    
+    # 查询活跃状态的服务
+    services_query = Service.query.filter_by(status='active')
+    
+    # 如果有搜索关键词，进行模糊搜索
+    if query:
+        services_query = services_query.filter(
+            db.or_(
+                Service.title.ilike(f'%{query}%'),
+                Service.description.ilike(f'%{query}%'),
+                Service.categories.ilike(f'%{query}%')
+            )
+        )
+    
+    # 如果有分类筛选
+    if category and category != '全部':
+        services_query = services_query.filter(Service.categories.ilike(f'%{category}%'))
+    
+    # 排序
+    if sort_by == 'price_asc':
+        services_query = services_query.order_by(Service.price.asc())
+    elif sort_by == 'price_desc':
+        services_query = services_query.order_by(Service.price.desc())
+    elif sort_by == 'rating':
+        services_query = services_query.order_by(Service.rating.desc())
+    else:
+        # 默认按创建时间降序排序
+        services_query = services_query.order_by(Service.created_at.desc())
+    
+    # 应用分页
+    total_count = services_query.count()
+    services = services_query.limit(limit).offset(offset).all()
+    
+    # 转换为JSON格式
+    result = []
+    for service in services:
+        service_data = service.to_dict()
+        
+        # 获取服务提供商信息
+        provider = Provider.query.get(service.provider_id)
+        if provider:
+            service_data['provider'] = provider.business_name or provider.username
+        
+        result.append(service_data)
+    
+    # 返回结果，包含分页信息
+    return jsonify({
+        'services': result,
+        'total': total_count,
+        'offset': offset,
+        'limit': limit,
+        'has_more': offset + len(result) < total_count
+    }), 200
+
+# API路由：获取单个服务详情（无需认证）
+@app.route('/api/services/public/<service_id>', methods=['GET'])
+def get_public_service_detail(service_id):
+    # 查询服务
+    service = Service.query.get(service_id)
+    
+    # 如果服务不存在，返回404
+    if not service:
+        return jsonify({'message': '服务不存在'}), 404
+    
+    # 如果服务不是活跃状态，返回403
+    if service.status != 'active':
+        return jsonify({'message': '该服务当前不可用'}), 403
+    
+    # 获取服务详情
+    service_data = service.to_dict()
+    
+    # 获取服务提供商信息
+    provider = Provider.query.get(service.provider_id)
+    if provider:
+        service_data['provider'] = {
+            'id': provider.id,
+            'username': provider.username,
+            'business_name': provider.business_name,
+            'business_description': provider.business_description,
+            'rating': provider.rating,
+            'verified': provider.verified
+        }
+    
+    # 获取服务评论
+    reviews = Review.query.filter_by(service_id=service_id).order_by(Review.created_at.desc()).limit(5).all()
+    service_data['reviews'] = []
+    
+    for review in reviews:
+        review_data = review.to_dict()
+        
+        # 获取用户信息
+        user = User.query.get(review.user_id)
+                if user:
+            review_data['user'] = {
+                'id': user.id,
+                'username': user.username,
+                'avatar': user.avatar
+            }
+        
+        service_data['reviews'].append(review_data)
+    
+    # 获取可用时间槽
+    current_date = datetime.now().date()
+    timeslots = TimeSlot.query.filter(
+        TimeSlot.provider_id == service.provider_id,
+        TimeSlot.date >= current_date,
+        TimeSlot.is_available == True
+    ).order_by(TimeSlot.date, TimeSlot.time).limit(20).all()
+    
+    service_data['available_timeslots'] = [timeslot.to_dict() for timeslot in timeslots]
+    
+    return jsonify(service_data), 200
+
+# API路由：获取所有服务提供商
+@app.route('/api/providers', methods=['GET'])
+def get_all_providers():
+    # 从请求头获取令牌
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': '缺少认证令牌'}), 401
+    
+    # 移除Bearer前缀（如果有）
+    if token.startswith('Bearer '):
+        token = token[7:]
+    
+    # 验证令牌
+    payload = verify_token(token)
+    if not payload:
+        return jsonify({'message': '无效或过期的令牌'}), 401
+    
+    # 查询所有服务提供商
+    providers = Provider.query.all()
+    
+    # 转换为JSON格式
+    result = []
+    for provider in providers:
+        provider_data = provider.to_dict()
+        result.append(provider_data)
+    
+    return jsonify(result), 200
+
+# 定时任务：检查即将到来的预约
+def check_upcoming_bookings():
+    with app.app_context():
+        print(f"[{datetime.now()}] 开始检查即将到来的预约...")
+        
+        # 获取所有待处理预约
+        pending_bookings = Booking.query.filter_by(status='pending').all()
+            
+            # 检查每个预约
+        for booking in pending_bookings:
+            booking_date = booking.date
+            booking_time = booking.time
+            
+            # 解析预约时间
+            hour, minute = map(int, booking_time.split(':'))
+            booking_datetime = datetime.combine(booking_date, datetime.min.time())
+            booking_datetime = booking_datetime.replace(hour=hour, minute=minute)
+            
+            # 计算时间差
+            time_diff = booking_datetime - datetime.now()
+            hours_remaining = time_diff.total_seconds() / 3600
+            
+            # 如果预约时间已过，自动标记为未出席
+            if hours_remaining < 0:
+                booking.status = 'no-show'
+                booking.updated_at = datetime.now()
+                db.session.commit()
+                print(f"预约 {booking.id} 已标记为未出席")
+            
+            # 如果预约即将到来（24小时内），发送提醒通知
+            elif 0 <= hours_remaining <= 24:
+                # 创建通知
+                user_notification = Notification(
+                    user_id=booking.user_id,
+                    type='booking',
+                    subtype='reminder',
+                    title='预约提醒',
+                    content=f"您的预约将在 {int(hours_remaining)} 小时后开始",
+                    related_id=booking.id,
+                    created_at=datetime.now()
+                )
+                
+                provider_notification = Notification(
+                    user_id=booking.provider_id,
+                    type='booking',
+                    subtype='reminder',
+                    title='预约提醒',
+                    content=f"您有一个预约将在 {int(hours_remaining)} 小时后开始",
+                    related_id=booking.id,
+                    created_at=datetime.now()
+                )
+                
+                db.session.add(user_notification)
+                db.session.add(provider_notification)
+                db.session.commit()
+                
+                print(f"已为预约 {booking.id} 发送提醒通知")
+        
+        print(f"[{datetime.now()}] 预约检查完成")
+
+# 启动定时任务
+def start_scheduler():
+    while True:
+        check_upcoming_bookings()
+        time.sleep(3600)  # 每小时检查一次
+
+scheduler_thread = threading.Thread(target=start_scheduler)
+scheduler_thread.daemon = True
+scheduler_thread.start()
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True) 

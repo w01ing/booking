@@ -1,0 +1,387 @@
+/* 页面基础样式 */
+body {
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.top-nav {
+    background: #fff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    color: #4a6cf7;
+}
+
+.page-title {
+    font-size: 1.25rem;
+    color: #333;
+    margin: 0;
+}
+
+/* 主容器样式 */
+.detail-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* 卡片基础样式 */
+.detail-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+/* 动画效果 */
+.animate-in {
+    animation: slideIn 0.5s ease forwards;
+}
+
+.detail-card:nth-child(1) { animation-delay: 0.1s; }
+.detail-card:nth-child(2) { animation-delay: 0.2s; }
+.detail-card:nth-child(3) { animation-delay: 0.3s; }
+.detail-card:nth-child(4) { animation-delay: 0.4s; }
+.action-buttons { animation-delay: 0.5s; }
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 服务信息卡片 */
+.service-info .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.service-icon {
+    font-size: 2rem;
+    color: #4a6cf7;
+    background: #f5f7ff;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+    flex-grow: 1;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: #e1e5f9;
+    color: #4a6cf7;
+}
+
+.service-details {
+    display: grid;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.detail-item i {
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.item-content {
+    flex-grow: 1;
+}
+
+.item-content label {
+    display: block;
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.item-content span {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+}
+
+/* 服务人员信息 */
+.staff-info h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
+.staff-profile {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.staff-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.staff-details h4 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.staff-details p {
+    margin: 0 0 0.5rem 0;
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.rating {
+    color: #ffc107;
+}
+
+.rating span {
+    color: #666;
+    margin-left: 0.5rem;
+}
+
+/* 预约备注 */
+.notes-info h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
+.notes-content {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* 温馨提示 */
+.tips-info h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
+.tips-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tips-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+}
+
+.tips-list li:last-child {
+    margin-bottom: 0;
+}
+
+.tips-list i {
+    color: #4a6cf7;
+}
+
+/* 底部按钮 */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    opacity: 0;
+}
+
+.action-buttons button {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel {
+    background: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.btn-cancel:hover {
+    background: #dc3545;
+    color: #fff;
+}
+
+.btn-reschedule {
+    background: #4a6cf7;
+    color: #fff;
+}
+
+.btn-reschedule:hover {
+    background: #3557e0;
+}
+
+/* 确认弹窗 */
+.confirm-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.confirm-modal.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.confirm-modal .modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    transform: scale(0.9);
+    opacity: 0;
+    animation: scaleIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-content h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
+.modal-content p {
+    color: #666;
+    margin: 0 0 1.5rem 0;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.modal-buttons button {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary {
+    background: #f8f9fa;
+    color: #666;
+}
+
+.btn-secondary:hover {
+    background: #e9ecef;
+}
+
+.btn-primary {
+    background: #4a6cf7;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #3557e0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .detail-container {
+        margin: 1rem auto;
+    }
+
+    .service-info .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .status-badge {
+        align-self: flex-start;
+    }
+
+    .staff-profile {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: center;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+} 

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务详情 - 在线预约平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/service-detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                <span>返回</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="detail-container">
+        <!-- 服务图片轮播 -->
+        <div class="service-gallery">
+            <div class="gallery-container">
+                <img src="img/service1.jpg" alt="服务图片" class="active">
+                <img src="img/service2.jpg" alt="服务图片">
+                <img src="img/service3.jpg" alt="服务图片">
+            </div>
+            <div class="gallery-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+
+        <!-- 服务信息 -->
+        <div class="service-info animate-in">
+            <div class="service-header">
+                <h1>专业中医推拿</h1>
+                <div class="price">¥188<span>/次</span></div>
+            </div>
+            <div class="rating-info">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                    <span class="rating">4.8</span>
+                </div>
+                <div class="reviews">(128条评价)</div>
+            </div>
+        </div>
+
+        <!-- 服务机构信息 -->
+        <div class="provider-info animate-in">
+            <div class="provider-header">
+                <img src="img/provider-logo.jpg" alt="机构logo" class="provider-logo">
+                <div class="provider-details">
+                    <h2>康复理疗中心</h2>
+                    <p><i class="fas fa-map-marker-alt"></i> 北京市朝阳区xxx路xx号</p>
+                </div>
+                <button class="btn-contact">
+                    <i class="fas fa-phone"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 服务详情 -->
+        <div class="service-details animate-in">
+            <h3>服务详情</h3>
+            <div class="detail-content">
+                <div class="detail-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="item-info">
+                        <h4>服务时长</h4>
+                        <p>60分钟</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-user-md"></i>
+                    <div class="item-info">
+                        <h4>专业医师</h4>
+                        <p>持证专业医师提供服务</p>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <div class="item-info">
+                        <h4>安全保障</h4>
+                        <p>全程保险保障</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务介绍 -->
+        <div class="service-description animate-in">
+            <h3>服务介绍</h3>
+            <div class="description-content">
+                <p>专业中医推拿采用传统推拿手法，结合现代康复理疗技术，为您提供专业的理疗服务。</p>
+                <ul>
+                    <li>专业医师一对一服务</li>
+                    <li>个性化治疗方案</li>
+                    <li>全程60分钟精心护理</li>
+                    <li>舒适的环境与设备</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 用户评价 -->
+        <div class="user-reviews animate-in">
+            <div class="reviews-header">
+                <h3>用户评价</h3>
+                <a href="#" class="view-all">查看全部 <i class="fas fa-chevron-right"></i></a>
+            </div>
+            <div class="reviews-list">
+                <div class="review-item">
+                    <div class="reviewer-info">
+                        <img src="img/avatar1.jpg" alt="用户头像" class="reviewer-avatar">
+                        <div class="reviewer-details">
+                            <h4>张先生</h4>
+                            <div class="review-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="review-date">2024-03-15</div>
+                    </div>
+                    <p class="review-content">医师很专业，服务很贴心，效果很好，强烈推荐！</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部预约按钮 -->
+    <div class="booking-bar">
+        <div class="price-info">
+            <div class="current-price">¥188</div>
+            <div class="price-unit">/次</div>
+        </div>
+        <button class="btn-book">立即预约</button>
+    </div>
+
+    <!-- 预约弹窗 -->
+    <div class="booking-modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>预约服务</h3>
+                <button class="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 日期选择 -->
+                <div class="date-selector">
+                    <h4>选择日期</h4>
+                    <div class="date-list">
+                        <!-- 日期选项将通过JS动态生成 -->
+                    </div>
+                </div>
+                <!-- 时间选择 -->
+                <div class="time-selector">
+                    <h4>选择时间</h4>
+                    <div class="time-list">
+                        <!-- 时间选项将通过JS动态生成 -->
+                    </div>
+                </div>
+                <!-- 备注信息 -->
+                <div class="booking-notes">
+                    <h4>备注信息</h4>
+                    <textarea placeholder="请输入特殊要求或注意事项（选填）"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="total-price">
+                    <span>总计：</span>
+                    <span class="price">¥188</span>
+                </div>
+                <button class="btn-confirm">确认预约</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/service-detail.js"></script>
+    <script>
+        // 确保在页面加载前定义预约modal函数，以防在JS文件中的定义被延迟
+        if (typeof window.showBookingModal !== 'function') {
+            window.showBookingModal = function() {
+                console.log('备用显示预约弹窗函数');
+                const modal = document.getElementById('bookingModal');
+                if (modal) {
+                    document.body.style.overflow = 'hidden';
+                    modal.classList.add('active');
+                }
+            };
+        }
+        
+        if (typeof window.hideBookingModal !== 'function') {
+            window.hideBookingModal = function() {
+                console.log('备用隐藏预约弹窗函数');
+                const modal = document.getElementById('bookingModal');
+                if (modal) {
+                    document.body.style.overflow = '';
+                    modal.classList.remove('active');
+                }
+            };
+        }
+        
+        if (typeof window.confirmBooking !== 'function') {
+            window.confirmBooking = function() {
+                console.log('备用确认预约函数');
+                alert('预约功能暂时不可用，请稍后再试');
+            };
+        }
+        
+        // 确保在页面加载完成后添加事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化页面
+            if (typeof initializePage === 'function') {
+                initializePage();
+            }
+            
+            // 立即预约按钮点击事件
+            const bookNowBtn = document.querySelector('.btn-book');
+            if (bookNowBtn) {
+                bookNowBtn.addEventListener('click', function() {
+                    try {
+                        window.showBookingModal();
+                    } catch (e) {
+                        console.error('显示预约弹窗失败:', e);
+                        alert('预约功能暂时不可用，请稍后再试');
+                    }
+                });
+            }
+            
+            // 关闭弹窗按钮点击事件
+            const closeModalBtn = document.querySelector('.close-modal');
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', function() {
+                    try {
+                        window.hideBookingModal();
+                    } catch (e) {
+                        console.error('隐藏预约弹窗失败:', e);
+                        const modal = document.getElementById('bookingModal');
+                        if (modal) modal.classList.remove('active');
+                    }
+                });
+            }
+            
+            // 确认预约按钮点击事件
+            const confirmBookingBtn = document.querySelector('.btn-confirm');
+            if (confirmBookingBtn) {
+                confirmBookingBtn.addEventListener('click', function() {
+                    try {
+                        window.confirmBooking();
+                    } catch (e) {
+                        console.error('确认预约失败:', e);
+                        alert('预约功能暂时不可用，请稍后再试');
+                    }
+                });
+            }
+        });
+
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                // 重新获取收藏状态并刷新
+                if (typeof refreshFavorites === 'function') {
+                    refreshFavorites();
+                }
+            }
+        });
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'favoritesChanged') {
+                if (typeof refreshFavorites === 'function') {
+                    refreshFavorites();
+                }
+                localStorage.removeItem('favoritesChanged');
+            }
+        });
+
+        // 操作后重新获取通知并刷新徽章
+        async function refreshNotificationsAndBadges() {
+            if (window.notificationManager) {
+                try {
+                    await window.notificationManager.loadNotifications();
+                    window.notificationManager.updateNotificationBadges();
+                } catch (error) {
+                    console.error('刷新通知失败:', error);
+                }
+            }
+        }
+
+        // 标记为已读按钮点击事件
+        document.querySelectorAll('.mark-read').forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', async function() {
+                    try {
+                        // ...原有逻辑...
+                        await refreshNotificationsAndBadges();
+                    } catch (error) {
+                        console.error('标记已读失败:', error);
+                    }
+                });
+            }
+        });
+
+        // 删除通知按钮点击事件
+        document.querySelectorAll('.delete-notification').forEach(btn => {
+            if (btn) {
+                btn.addEventListener('click', async function() {
+                    try {
+                        // ...原有逻辑...
+                        await refreshNotificationsAndBadges();
+                    } catch (error) {
+                        console.error('删除通知失败:', error);
+                    }
+                });
+            }
+        });
+
+        // 这些函数在服务详情页面可能不需要，所以使用条件声明
+        if (document.querySelector('.my-reviews-container')) {
+            async function loadMyReviews() {
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        console.warn('用户未登录，无法加载评价');
+                        return;
+                    }
+                    
+                    const response = await fetch('/api/bookings', {
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('获取预约失败: ' + response.status);
+                    }
+                    
+                    const data = await response.json();
+                    const bookings = data.bookings || data; // 视后端返回结构而定
+
+                    const toReviewList = [];
+                    const reviewedList = [];
+
+                    bookings.forEach(booking => {
+                        if (booking.status === 'completed') {
+                            if (booking.has_review) {
+                                reviewedList.push(booking);
+                            } else {
+                                toReviewList.push(booking);
+                            }
+                        }
+                    });
+
+                    renderToReview(toReviewList);
+                    renderReviewed(reviewedList);
+                } catch (error) {
+                    console.error('加载评价失败:', error);
+                }
+            }
+
+            function renderToReview(list) {
+                // 渲染"待评价"区域
+                console.log('渲染待评价列表:', list);
+            }
+
+            function renderReviewed(list) {
+                // 渲染"已评价"区域
+                console.log('渲染已评价列表:', list);
+            }
+            
+            // 如果是评价相关页面，初始化加载评价
+            if (typeof loadMyReviews === 'function') {
+                loadMyReviews().catch(err => console.error('加载评价数据失败:', err));
+            }
+        }
+    </script>
+</body>
+</html> 

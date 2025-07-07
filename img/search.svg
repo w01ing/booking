@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <style>
+    .st0{fill:#F0F3FA;}
+    .st1{fill:#E1E5F9;}
+    .st2{fill:#D4D8E8;}
+    .st3{fill:#4A6CF7;}
+    .st4{fill:#3A5BD9;}
+    .st5{fill:#FFFFFF;}
+    .st6{opacity:0.1;}
+    .st7{fill:#333333;}
+  </style>
+  
+  <!-- Background Circle -->
+  <circle class="st0" cx="250" cy="250" r="250"/>
+  
+  <!-- Search Illustration -->
+  <g>
+    <!-- Magnifying Glass Handle -->
+    <path class="st3" d="M340,290l80,80c11,11,11,29,0,40l0,0c-11,11-29,11-40,0l-80-80L340,290z"/>
+    <path class="st4" d="M380,410c-7.7,0-15.4-2.9-21.2-8.8l-80-80c-1.9-1.9-1.9-5.1,0-7.1l40-40c1.9-1.9,5.1-1.9,7.1,0l80,80
+      c11.7,11.7,11.7,30.7,0,42.4C395.4,407.1,387.7,410,380,410z M290.8,325l76.5,76.5c7.8,7.8,20.5,7.8,28.3,0
+      c7.8-7.8,7.8-20.5,0-28.3L319.1,296.7L290.8,325z"/>
+    
+    <!-- Magnifying Glass Circle -->
+    <circle class="st5" cx="240" cy="240" r="130"/>
+    <circle class="st1" cx="240" cy="240" r="110"/>
+    <circle class="st2" cx="240" cy="240" r="90"/>
+    
+    <!-- Documents and Search Elements -->
+    <g class="st6">
+      <!-- Paper Sheet -->
+      <rect x="140" y="200" width="80" height="100" rx="5" ry="5" class="st5"/>
+      <rect x="150" y="220" width="60" height="5" rx="2" ry="2" class="st7"/>
+      <rect x="150" y="235" width="60" height="5" rx="2" ry="2" class="st7"/>
+      <rect x="150" y="250" width="40" height="5" rx="2" ry="2" class="st7"/>
+      <rect x="150" y="265" width="50" height="5" rx="2" ry="2" class="st7"/>
+      
+      <!-- Paper Sheet -->
+      <rect x="260" y="200" width="80" height="100" rx="5" ry="5" class="st5"/>
+      <rect x="270" y="220" width="60" height="5" rx="2" ry="2" class="st7"/>
+      <rect x="270" y="235" width="60" height="5" rx="2" ry="2" class="st7"/>
+      <rect x="270" y="250" width="40" height="5" rx="2" ry="2" class="st7"/>
+      <rect x="270" y="265" width="50" height="5" rx="2" ry="2" class="st7"/>
+    </g>
+    
+    <!-- Person with Magnifying Glass -->
+    <g>
+      <ellipse cx="200" cy="350" rx="40" ry="10" class="st6"/>
+      
+      <!-- Body -->
+      <path d="M220,320v30h-40v-30L220,320z" class="st3"/>
+      
+      <!-- Head -->
+      <circle cx="200" cy="300" r="20" fill="#FFD7B3"/>
+      
+      <!-- Magnifying Glass in Hand -->
+      <circle cx="240" cy="340" r="15" fill="none" stroke="#333" stroke-width="3"/>
+      <line x1="250" y1="350" x2="260" y2="360" stroke="#333" stroke-width="3"/>
+      
+      <!-- Arm -->
+      <path d="M215,320c10,5,20,15,25,20" stroke="#3A5BD9" stroke-width="8" stroke-linecap="round"/>
+    </g>
+  </g>
+  
+  <!-- Search Text -->
+  <text x="250" y="430" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#4A6CF7">搜索服务</text>
+</svg> 

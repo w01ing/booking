@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background circle -->
+    <circle cx="150" cy="150" r="145" fill="#f5f5f5"/>
+    
+    <!-- Form illustration -->
+    <rect x="70" y="60" width="160" height="180" rx="15" fill="#fff" stroke="#4481eb" stroke-width="4"/>
+    
+    <!-- Form lines -->
+    <line x1="90" y1="100" x2="210" y2="100" stroke="#04befe" stroke-width="3"/>
+    <line x1="90" y1="140" x2="210" y2="140" stroke="#04befe" stroke-width="3"/>
+    <line x1="90" y1="180" x2="210" y2="180" stroke="#04befe" stroke-width="3"/>
+    
+    <!-- Checkmark -->
+    <circle cx="200" cy="220" r="25" fill="#4481eb"/>
+    <path d="M190 220 L198 228 L210 212" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- User icon -->
+    <circle cx="150" cy="50" r="20" fill="#04befe"/>
+    <path d="M150 40 Q150 30 160 35 T150 40" fill="#fff"/>
+    <circle cx="145" cy="45" r="2" fill="#fff"/>
+    <circle cx="155" cy="45" r="2" fill="#fff"/>
+    
+    <!-- Decorative elements -->
+    <circle cx="60" cy="100" r="10" fill="#4481eb" opacity="0.3"/>
+    <circle cx="240" cy="150" r="15" fill="#04befe" opacity="0.5"/>
+    <circle cx="90" cy="220" r="12" fill="#4481eb" opacity="0.4"/>
+    <circle cx="220" cy="80" r="8" fill="#04befe" opacity="0.6"/>
+    
+    <!-- Plus icon -->
+    <circle cx="50" cy="150" r="15" fill="#4481eb"/>
+    <line x1="42" y1="150" x2="58" y2="150" stroke="#fff" stroke-width="3"/>
+    <line x1="50" y1="142" x2="50" y2="158" stroke="#fff" stroke-width="3"/>
+</svg> 

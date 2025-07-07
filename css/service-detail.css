@@ -1,0 +1,732 @@
+/* 基础样式 */
+body {
+    margin: 0;
+    padding: 0;
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* 顶部导航栏 */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+}
+
+.nav-left .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.nav-right {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-right button {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    font-size: 1.25rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-right button:hover {
+    color: #4a6cf7;
+}
+
+/* 主容器 */
+.detail-container {
+    padding-top: 60px;
+    padding-bottom: 80px;
+}
+
+/* 图片轮播 */
+.service-gallery {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+.gallery-container {
+    display: flex;
+    transition: transform 0.3s ease;
+}
+
+.gallery-container img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.gallery-dots {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: #fff;
+    transform: scale(1.2);
+}
+
+/* 服务信息 */
+.service-info {
+    background: #fff;
+    padding: 1.5rem;
+    margin-top: -2rem;
+    border-radius: 20px 20px 0 0;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.service-header h1 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+}
+
+.price {
+    color: #ff4d4f;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.price span {
+    font-size: 0.875rem;
+    color: #999;
+}
+
+.rating-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stars {
+    color: #ffc107;
+}
+
+.rating {
+    color: #666;
+    margin-left: 0.5rem;
+}
+
+.reviews {
+    color: #999;
+    font-size: 0.875rem;
+}
+
+/* 服务机构信息 */
+.provider-info {
+    background: #fff;
+    padding: 1.5rem;
+    margin-top: 1px;
+}
+
+.provider-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.provider-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.provider-details {
+    flex-grow: 1;
+}
+
+.provider-details h2 {
+    font-size: 1.125rem;
+    color: #333;
+    margin: 0 0 0.5rem 0;
+}
+
+.provider-details p {
+    color: #666;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.btn-contact {
+    background: #4a6cf7;
+    color: #fff;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-contact:hover {
+    transform: scale(1.1);
+}
+
+/* 服务详情 */
+.service-details {
+    background: #fff;
+    padding: 1.5rem;
+    margin-top: 1px;
+}
+
+.service-details h3 {
+    font-size: 1.125rem;
+    color: #333;
+    margin: 0 0 1rem 0;
+}
+
+.detail-content {
+    display: grid;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.detail-item i {
+    color: #4a6cf7;
+    font-size: 1.25rem;
+    padding: 0.5rem;
+    background: #f5f7ff;
+    border-radius: 8px;
+}
+
+.item-info h4 {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 0.25rem 0;
+}
+
+.item-info p {
+    color: #666;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* 服务介绍 */
+.service-description {
+    background: #fff;
+    padding: 1.5rem;
+    margin-top: 1px;
+}
+
+.service-description h3 {
+    font-size: 1.125rem;
+    color: #333;
+    margin: 0 0 1rem 0;
+}
+
+.description-content p {
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 1rem 0;
+}
+
+.description-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.description-content li {
+    color: #666;
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.description-content li:before {
+    content: "•";
+    color: #4a6cf7;
+    position: absolute;
+    left: 0;
+}
+
+/* 用户评价 */
+.user-reviews {
+    background: #fff;
+    padding: 1.5rem;
+    margin-top: 1px;
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.reviews-header h3 {
+    font-size: 1.125rem;
+    color: #333;
+    margin: 0;
+}
+
+.view-all {
+    color: #4a6cf7;
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.review-item {
+    border-radius: 12px;
+    background: #f8f9fa;
+    padding: 1rem;
+}
+
+.reviewer-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.reviewer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.reviewer-details {
+    flex-grow: 1;
+}
+
+.reviewer-details h4 {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 0.25rem 0;
+}
+
+.review-stars {
+    color: #ffc107;
+    font-size: 0.875rem;
+}
+
+.review-date {
+    color: #999;
+    font-size: 0.875rem;
+}
+
+.review-content {
+    color: #666;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* 底部预约栏 */
+.booking-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 99;
+}
+
+.price-info {
+    display: flex;
+    align-items: baseline;
+}
+
+.current-price {
+    color: #ff4d4f;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.price-unit {
+    color: #999;
+    font-size: 0.875rem;
+    margin-left: 0.25rem;
+}
+
+.btn-book {
+    background: #4a6cf7;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-book:hover {
+    background: #3557e0;
+    transform: translateY(-2px);
+}
+
+/* 预约弹窗 */
+.booking-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.booking-modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    opacity: 1;
+}
+
+.modal-content {
+    background: #fff;
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.booking-modal.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    font-size: 1.25rem;
+    color: #333;
+    margin: 0;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    max-height: calc(90vh - 180px);
+    overflow-y: auto;
+}
+
+.date-selector,
+.time-selector {
+    margin-bottom: 1.5rem;
+}
+
+.date-selector h4,
+.time-selector h4 {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 1rem 0;
+}
+
+.date-list {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f5f5f5;
+}
+
+.date-list::-webkit-scrollbar {
+    height: 6px;
+}
+
+.date-list::-webkit-scrollbar-track {
+    background: #f5f5f5;
+}
+
+.date-list::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 6px;
+}
+
+.date-option {
+    min-width: 70px;
+    height: 70px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    background-color: #fff;
+}
+
+.date-option:hover {
+    border-color: #4e6ef2;
+}
+
+.date-option.selected {
+    background-color: #4e6ef2;
+    color: white;
+    border-color: #4e6ef2;
+}
+
+.date-option .day {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.date-option .date {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* 时间选择器样式 */
+.time-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.time-option {
+    width: calc(33.33% - 10px);
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #fff;
+}
+
+.time-option:hover {
+    border-color: #4e6ef2;
+}
+
+.time-option.selected {
+    background-color: #4e6ef2;
+    color: white;
+    border-color: #4e6ef2;
+}
+
+.loading-times, .no-times, .error-times {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.loading-times {
+    color: #4e6ef2;
+}
+
+.error-times {
+    color: #ff4d4f;
+}
+
+.booking-notes {
+    margin-bottom: 1.5rem;
+}
+
+.booking-notes h4 {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 1rem 0;
+}
+
+.booking-notes textarea {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    resize: none;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.booking-notes textarea:focus {
+    outline: none;
+    border-color: #4e6ef2;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-price {
+    color: #333;
+    font-size: 1rem;
+}
+
+.total-price .price {
+    color: #ff4d4f;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.btn-confirm {
+    background: #4a6cf7;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+    background: #3557e0;
+}
+
+/* 禁用按钮样式 */
+.btn-confirm:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* 动画效果 */
+.animate-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideIn 0.5s ease forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .service-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .provider-header {
+        flex-wrap: wrap;
+    }
+
+    .provider-details {
+        width: calc(100% - 80px);
+    }
+
+    .btn-contact {
+        margin-left: auto;
+    }
+
+    .date-list,
+    .time-list {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* 添加时间段加载和错误状态样式 */
+.loading-times, .error-times, .no-times {
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.loading-times {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+.error-times {
+    background-color: #fff2f0;
+    color: #ff4d4f;
+}
+
+.no-times {
+    background-color: #f0f7ff;
+    color: #1890ff;
+} 

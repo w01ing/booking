@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索服务 - 预约平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/search.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">预约平台</a>
+            </div>
+            <div class="search-bar">
+                <form id="search-form">
+                    <input type="text" id="search-input" placeholder="搜索服务...">
+                    <i class="fas fa-search" id="search-icon"></i>
+                </form>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="search.html" class="active">服务</a></li>
+                    <li><a href="dashboard.html">我的</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="search-header">
+            <div class="container">
+                <h1 id="search-title">搜索结果</h1>
+                <p id="search-description">为您找到相关服务</p>
+            </div>
+        </section>
+
+        <section class="search-filters">
+            <div class="container">
+                <div class="filter-group categories">
+                    <div class="category-tab active">全部</div>
+                    <div class="category-tab">健康</div>
+                    <div class="category-tab">美容</div>
+                    <div class="category-tab">健身</div>
+                    <div class="category-tab">教育</div>
+                    <div class="category-tab">摄影</div>
+                    <div class="category-tab">其他</div>
+                </div>
+                <div class="filter-group sort">
+                    <div class="sort-label">排序:</div>
+                    <div class="sort-option active" data-sort="relevance">相关性</div>
+                    <div class="sort-option" data-sort="price-asc">价格 ↑</div>
+                    <div class="sort-option" data-sort="price-desc">价格 ↓</div>
+                    <div class="sort-option" data-sort="rating">评分</div>
+                </div>
+                <div class="filter-group view-toggle">
+                    <div class="view-option active" id="grid-view"><i class="fas fa-th"></i></div>
+                    <div class="view-option" id="list-view"><i class="fas fa-list"></i></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="search-results">
+            <div class="container">
+                <div class="results-header">
+                    <div class="result-count">0 个结果</div>
+                </div>
+                <div id="search-results" class="services-grid">
+                    <!-- 搜索结果将通过JavaScript动态加载 -->
+                </div>
+                <div class="load-more">
+                    <button id="load-more-btn">加载更多</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于我们</h3>
+                    <p>预约平台是一个连接服务提供商和用户的在线预约系统，让服务预约变得简单高效。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="search.html">服务</a></li>
+                        <li><a href="dashboard.html">我的</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <p><i class="fas fa-envelope"></i> support@booking.com</p>
+                    <p><i class="fas fa-phone"></i> 400-800-8888</p>
+                    <div class="social-links">
+                        <a href="https://wx.qq.com/" target="_blank"><i class="fab fa-weixin"></i></a>
+                        <a href="https://passport.weibo.com/sso/signin?entry=miniblog&source=miniblog&disp=popup&url=https%3A%2F%2Fweibo.com%2Fnewlogin%3Ftabtype%3Dweibo%26gid%3D102803%26openLoginLayer%3D0%26url%3D&from=weibopro" target="_blank"><i class="fab fa-weibo"></i></a>
+                        <a href="https://graph.qq.com/oauth2.0/show?which=Login&display=pc&scope=get_idollist%2Cget_fanslist%2Cget_user_info%2Cadd_topic%2Cadd_t%2Cget_info%2Cadd_share&display=&response_type=code&redirect_uri=https%3A%2F%2Fpassport.iqiyi.com%2Fapis%2Fthirdparty%2Fncallback.action%3Ffrom%3D4%26source%3D4%26agenttype%3D1%26device_id%3D83569853f9231cfeb2471cb9eafaf02a%26isframe%3D1%26redirect_url%3Dhttps%253A%252F%252Fpassport.iqiyi.com%252Fapis%252Fthirdparty%252Fncallback.action%253Ffrom%253D4%26verifyPhone%3D1%26ptid%3D01010021010000000000%26exception_url%3Dhttps%253A%252F%252Fwww.iqiyi.com%252Fthirdlogin%252Fclose.html%253Fbusiness%253Dpcw%26success_url%3Dhttps%253A%252F%252Fwww.iqiyi.com%252Fthirdlogin%252Fclose.html%253Fbusiness%253Dpcw%26is_reg_confirm%3D1%26fromSDK%3D1&client_id=206978&state=bI4GuUCUJQPIM9FiXO72APEomMoa6287bZ1XmXFpTQ0noEK5bi6dNspAqYzu4z%252FRcKicwGI1Wvlx%252BiIr5gDfZg%253D%253D" target="_blank"><i class="fab fa-qq"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 预约平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/notification-manager.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/search.js"></script>
+</body>
+</html>

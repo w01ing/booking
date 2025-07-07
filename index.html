@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线预约平台 - 登录/注册</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 添加toast样式 */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px;
+        }
+
+        #toast.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @-webkit-keyframes fadein {
+            from {bottom: 0; opacity: 0;} 
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @-webkit-keyframes fadeout {
+            from {bottom: 30px; opacity: 1;} 
+            to {bottom: 0; opacity: 0;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <!-- 登录表单 -->
+                <form action="#" class="sign-in-form" onsubmit="return validateSignIn(event)">
+                    <h2 class="title">登录</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="email" placeholder="电子邮箱" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="密码" required />
+                        <i class="fas fa-eye" id="loginEye" onclick="togglePasswordVisibility('loginPassword', 'loginEye')"></i>
+                    </div>
+                    <div class="agreement">
+                        <input type="checkbox" id="agreeLogin">
+                        <label for="agreeLogin">我已经阅读并同意<a href="#">用户隐私条款</a></label>
+                    </div>
+
+                    <input type="submit" value="登录" class="btn solid" />
+                    <p class="social-text">或使用社交账号登录</p>
+                    <div class="social-media">
+                        <a href="#" class="social-icon" onclick="openSocialLogin('https://wx.qq.com/')">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="social-icon" onclick="openSocialLogin('https://graph.qq.com/oauth2.0/show?which=Login&display=pc&scope=get_idollist%2Cget_fanslist%2Cget_user_info%2Cadd_topic%2Cadd_t%2Cget_info%2Cadd_share&display=&response_type=code&redirect_uri=https%3A%2F%2Fpassport.iqiyi.com%2Fapis%2Fthirdparty%2Fncallback.action%3Ffrom%3D4%26source%3D4%26agenttype%3D1%26device_id%3D83569853f9231cfeb2471cb9eafaf02a%26isframe%3D1%26redirect_url%3Dhttps%253A%252F%252Fpassport.iqiyi.com%252Fapis%252Fthirdparty%252Fncallback.action%253Ffrom%253D4%26verifyPhone%3D1%26ptid%3D01010021010000000000%26exception_url%3Dhttps%253A%252F%252Fwww.iqiyi.com%252Fthirdlogin%252Fclose.html%253Fbusiness%253Dpcw%26success_url%3Dhttps%253A%252F%252Fwww.iqiyi.com%252Fthirdlogin%252Fclose.html%253Fbusiness%253Dpcw%26is_reg_confirm%3D1%26fromSDK%3D1&client_id=206978&state=bI4GuUCUJQPIM9FiXO72APEomMoa6287bZ1XmXFpTQ0noEK5bi6dNspAqYzu4z%252FRcKicwGI1Wvlx%252BiIr5gDfZg%253D%253D')">
+                            <i class="fab fa-qq"></i>
+                        </a>
+                        <a href="#" class="social-icon" onclick="openSocialLogin('https://passport.weibo.com/sso/signin?entry=miniblog&source=miniblog&disp=popup&url=https%3A%2F%2Fweibo.com%2Fnewlogin%3Ftabtype%3Dweibo%26gid%3D102803%26openLoginLayer%3D0%26url%3Dhttps%253A%252F%252Fweibo.com%252F&from=weibopro')">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                    </div>
+                </form>
+
+                <!-- 注册表单 -->
+                <form action="#" class="sign-up-form" onsubmit="return validateSignUp(event)">
+                    <h2 class="title">注册</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="用户名" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="电子邮箱" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="registerPassword" placeholder="密码" required />
+                        <i class="fas fa-eye" id="registerEye" onclick="togglePasswordVisibility('registerPassword', 'registerEye')"></i>
+                    </div>
+                    <div class="user-type">
+                        <label>
+                            <input type="radio" name="userType" value="user" checked>
+                            <span>我是用户</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="userType" value="provider">
+                            <span>我是服务商</span>
+                        </label>
+                    </div>
+                    <div class="agreement">
+                        <input type="checkbox" id="agreeRegister" checked>
+                        <label for="agreeRegister">我已经阅读并同意<a href="#">用户隐私条款</a></label>
+                    </div>
+                    <button type="submit" class="btn">注册</button>
+                    <p class="social-text">或使用社交账号注册</p>
+                    <div class="social-links">
+                        <a href="#" class="social-icon" onclick="openSocialLogin('https://wx.qq.com/')">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" class="social-icon" onclick="openSocialLogin('https://graph.qq.com/oauth2.0/show?which=Login&display=pc&scope=get_idollist%2Cget_fanslist%2Cget_user_info%2Cadd_topic%2Cadd_t%2Cget_info%2Cadd_share&display=&response_type=code&redirect_uri=https%3A%2F%2Fpassport.iqiyi.com%2Fapis%2Fthirdparty%2Fncallback.action%3Ffrom%3D4%26source%3D4%26agenttype%3D1%26device_id%3D83569853f9231cfeb2471cb9eafaf02a%26isframe%3D1%26redirect_url%3Dhttps%253A%252F%252Fpassport.iqiyi.com%252Fapis%252Fthirdparty%252Fncallback.action%253Ffrom%253D4%26verifyPhone%3D1%26ptid%3D01010021010000000000%26exception_url%3Dhttps%253A%252F%252Fwww.iqiyi.com%252Fthirdlogin%252Fclose.html%253Fbusiness%253Dpcw%26success_url%3Dhttps%253A%252F%252Fwww.iqiyi.com%252Fthirdlogin%252Fclose.html%253Fbusiness%253Dpcw%26is_reg_confirm%3D1%26fromSDK%3D1&client_id=206978&state=bI4GuUCUJQPIM9FiXO72APEomMoa6287bZ1XmXFpTQ0noEK5bi6dNspAqYzu4z%252FRcKicwGI1Wvlx%252BiIr5gDfZg%253D%253D')">
+                            <i class="fab fa-qq"></i>
+                        </a>
+                        <a href="#" class="social-icon" onclick="openSocialLogin('https://passport.weibo.com/sso/signin?entry=miniblog&source=miniblog&disp=popup&url=https%3A%2F%2Fweibo.com%2Fnewlogin%3Ftabtype%3Dweibo%26gid%3D102803%26openLoginLayer%3D0%26url%3Dhttps%253A%252F%252Fweibo.com%252F&from=weibopro')">
+                            <i class="fab fa-weibo"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="panels-container">
+            <div class="panel left-panel">
+                <div class="content">
+                    <h3>新用户？</h3>
+                    <p>立即注册，开启您的预约服务之旅！</p>
+                    <button class="btn transparent" id="sign-up-btn">注册</button>
+                </div>
+                <img src="img/log.svg" class="image" alt="" />
+            </div>
+            <div class="panel right-panel">
+                <div class="content">
+                    <h3>已有账号？</h3>
+                    <p>请登录您的账号，享受便捷的预约服务！</p>
+                    <button class="btn transparent" id="sign-in-btn">登录</button>
+                </div>
+                <img src="img/register.svg" class="image" alt="" />
+            </div>
+        </div>
+    </div>
+    <!-- 添加toast元素 -->
+    <div id="toast"></div>
+
+    <script>
+        function validateSignIn(event) {
+            const agreeCheckbox = document.getElementById('agreeLogin');
+            if (!agreeCheckbox.checked) {
+                showToast('请同意隐私条款后再登录。', 'error');
+                event.preventDefault(); // 阻止表单提交
+                return false;
+            }
+            return true;
+        }
+
+        function validateSignUp(event) {
+            const agreeCheckbox = document.getElementById('agreeRegister');
+            if (!agreeCheckbox.checked) {
+                showToast('请同意隐私条款后再注册。', 'error');
+                event.preventDefault(); // 阻止表单提交
+                return false;
+            }
+            return true;
+        }
+
+        function showToast(message, type) {
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            toast.innerHTML = message;
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        function togglePasswordVisibility(passwordId, eyeId) {
+            const passwordInput = document.getElementById(passwordId);
+            const eyeIcon = document.getElementById(eyeId);
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+
+        function openSocialLogin(url) {
+            const newWindow = window.open(url, '_blank', 'width=600,height=400');
+            const checkWindowClosed = setInterval(() => {
+                if (newWindow.closed) {
+                    clearInterval(checkWindowClosed);
+                    // 这里可以添加登录完成后的操作，例如刷新页面或更新用户状态
+                    location.reload();
+                }
+            }, 500);
+        }
+    </script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search-handler.js"></script>
+</body>
+</html>

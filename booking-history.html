@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预约历史 - 预约平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/booking-history.css">
+</head>
+<body>
+    <!-- 主体布局 -->
+    <div class="dashboard-layout">
+        <!-- 顶部导航栏 -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <a href="index.html" class="nav-logo">
+                    <img src="img/log.svg" alt="预约平台">
+                </a>
+                <form class="search-form" action="search-results.html" method="GET">
+                    <div class="search-bar">
+                        <i class="fas fa-search" id="search-icon"></i>
+                        <input type="text" name="query" id="search-input" placeholder="搜索服务或商家...">
+                    </div>
+                </form>
+            </div>
+            <div class="nav-right">
+                <a href="#" class="nav-btn publish-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>发现服务</span>
+                </a>
+                <div class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge"></span>
+                </div>
+                <div class="user-menu">
+                    <span class="user-name">张三</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 侧边栏 -->
+        <aside class="dashboard-sidebar">
+            <div class="user-profile">
+                <div class="profile-header">
+                    <h3 class="profile-name">张三</h3>
+                    <p class="profile-role">普通用户</p>
+                </div>
+                <div class="booking-stats">
+                    <div class="stat-card waiting" data-status="waiting">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">待确认预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card upcoming" data-status="upcoming">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">2</span>
+                            <span class="stat-label">即将到来</span>
+                        </div>
+                    </div>
+                    <div class="stat-card completed" data-status="completed">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">已完成预约</span>
+                        </div>
+                    </div>
+                    <div class="stat-card cancelled" data-status="canceled">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value">1</span>
+                            <span class="stat-label">已取消预约</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="dashboard-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>预约日历</span>
+                </a>
+                <a href="booking-history.html" class="nav-item active">
+                    <i class="fas fa-history"></i>
+                    <span>预约历史</span>
+                </a>
+                <a href="my-reviews.html" class="nav-item">
+                    <i class="fas fa-star"></i>
+                    <span>我的评价</span>
+                </a>
+                <a href="my-favorites.html" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>收藏服务</span>
+                </a>
+                <a href="account-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>账号设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主要内容区 -->
+        <main class="dashboard-main">
+            <div class="page-header">
+                <h1>预约历史</h1>
+                <div class="header-actions">
+                    <div class="filter-group">
+                        <button class="filter-btn active" data-status="completed">已完成</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-container">
+                <!-- 预约时间线内容将通过JavaScript动态生成 -->
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/auth.js"></script>
+    <script src="js/sidebar-manager.js"></script>
+    <script src="js/booking-history.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/search-handler.js"></script>
+</body>
+</html>
